@@ -133,18 +133,60 @@ def test_bwd(bwd, x_test, y_test):
         plt.ylabel('power amplitude')
         plt.legend(['actual', 'prediction'], loc='upper left')
         plt.show()
+    
+def test_vs_plot(bwd, bwd_without_tandem, x_test, y_test):
+    """
+    tests the model with and without tandem architecture
+    """
+    x_pred_direct = bwd_without_tandem.predict(y_test)
+    x_pred_tandem = bwd.predict(y_test)
+    random_samples = [random.randint(0, len(x_pred_direct)-1) for _ in range(20)]
+
+    d = (LAMBDA_RANGE[1] - LAMBDA_RANGE[0])/SAMPLE_SIZE
+    x_axis = []
+    start = LAMBDA_RANGE[0]
+
+    for _ in range(SAMPLE_SIZE):
+        x_axis.append(start)
+        start = start + d
+
+    x_axis = np.array(x_axis)
+
+    for i in random_samples:
+        plt.figure(i)
+        x = x_test[i]
+        plt.plot(x_axis, reflected_samples(x[0], x[1], x[2], x[3], x[4]))
+        
+        x = x_pred_direct[i]
+        plt.plot(x_axis, reflected_samples(x[0], x[1], x[2], x[3], x[4]))
+        
+        x = x_pred_tandem[i]
+        plt.plot(x_axis, reflected_samples(x[0], x[1], x[2], x[3], x[4]))
+        
+        plt.xlabel('wavelength in nm')
+        plt.ylabel('power amplitude')
+        plt.legend(['actual', 'direct', 'tandem'], loc='upper left')
+        plt.savefig(str(i))
+        plt.show()
 
 
 if __name__ == '__main__':
     bwd = keras.models.load_model('bwd_64x64x64x32_50epochs_4e-4_adam_200000')
     fwd = keras.models.load_model('fwd_256x256x256x256_50epochs_1e-4_adam_200000')
+    bwd_without_tandem = keras.models.load_model('bwd_without_tandem_64x64x64x32_10epoch_0.0404')
 
     with np.load('data_300_samples200000.npz') as data:
         x_test = data['Xtest']
         y_test = data['Ytest']
 
-    # test fwd model
-    test_fwd(fwd, x_test, y_test)
+    # # test fwd model
+    # test_fwd(fwd, x_test, y_test)
 
-    # test bwd model
+    # # test bwd model
     # test_bwd(bwd, x_test, y_test)
+
+    # test bwd without tandem
+    # test_bwd(bwd_without_tandem, x_test, y_test)
+
+    # test vs plot
+    test_vs_plot(bwd, bwd_without_tandem, x_test, y_test)
