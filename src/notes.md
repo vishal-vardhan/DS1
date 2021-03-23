@@ -1,0 +1,5 @@
+- n0 : changes peak position
+- pitch : changes peak position
+- neta : changes gain
+- l : changes gain, increses sidelobes
+- dn : changes gain
