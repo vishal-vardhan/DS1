@@ -2,4 +2,4 @@
 - pitch : changes peak position
 - neta : changes gain
 - l : changes gain, increses sidelobes
-- dn : changes gain
+- dn : changes gain, decreases BW

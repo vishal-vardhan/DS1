@@ -1,9 +1,9 @@
 from math import exp, cos, pi, sin
 
 # definitions of different apodization functions
-def gaussianFunc(x, data):
+def gaussianFunc(x, data, a=4):
     L = data.l
-    return exp(-4*((x-L/2)/L)**2)
+    return exp(-a*((x-L/2)/L)**2)
 
 def hammingFunc(x, data):
     L = data.l
